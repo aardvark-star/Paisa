@@ -1,0 +1,500 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paisa Plate: eat well, spend wisely</title>
+<script src="https://cdn.jsdelivr.net/npm/javascript-lp-solver@0.4.24/prod/solver.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#0e0e0c;--s1:#171714;--s2:#201f1b;--bd:#2f2e28;--fg:#f4efe3;--mut:#a29d8e;--gr:#9ccc65;--ye:#f4b942;--or:#f08a3c;--be:#e05a72;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 "DM Sans",system-ui,sans-serif;padding-bottom:70px}
+h1,h2,h3,.disp{font-family:"Bricolage Grotesque","DM Sans",system-ui,sans-serif;font-weight:800;letter-spacing:-.03em;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:9;background:rgba(14,14,12,.94);border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px))}
+.brand{display:none;font:800 18px "Bricolage Grotesque",sans-serif}
+nav div{display:flex;gap:2px;width:100%;justify-content:space-around}
+nav button{background:none;border:0;padding:10px 8px;color:var(--mut);font-weight:500;font-size:14px;border-bottom:2px solid transparent}
+nav button.cur{color:var(--fg);border-color:var(--ye)}
+@media(min-width:760px){nav{top:0;bottom:auto;border:0;border-bottom:1px solid var(--bd);padding:10px 28px;padding-top:calc(10px + env(safe-area-inset-top,0px))}nav div{width:auto;gap:18px}.brand{display:block}body{padding:60px 0 0}}
+main{max-width:1080px;margin:0 auto;padding:0 20px 40px}
+.view{display:none}.view.on{display:block;animation:in .4s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.kick{color:var(--ye);font-weight:700;font-size:14px;margin:0 0 14px}
+.hero{padding:44px 0 30px}
+.hero h1{font-size:clamp(3.6rem,16vw,10.5rem);line-height:.86}.hero h1 span{display:block}.hero h1 .g{color:var(--gr)}
+.lead{font-size:clamp(1.1rem,2.4vw,1.45rem);max-width:30em;color:var(--mut);margin:26px 0}
+.cta{background:var(--ye);color:#14130f;border:0;border-radius:4px;padding:16px 28px;font-weight:700;font-size:17px}
+.cta:hover{background:#ffd06b}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:40px}
+.tl{background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:14px 8px;text-align:center}.tl span{display:block;font-size:clamp(2.2rem,8vw,4rem);line-height:1.2}.tl small{color:var(--mut)}
+@media(min-width:760px){.tiles{grid-template-columns:repeat(8,1fr)}}
+.story{padding:70px 0;border-top:1px solid var(--bd)}.story p{margin:0}.story .a{font:800 clamp(1.5rem,4vw,2.6rem)/1.15 "Bricolage Grotesque",sans-serif;color:var(--mut);max-width:20em}
+.story .b{font:800 clamp(2.2rem,7vw,5rem)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;margin-top:18px!important;max-width:14em}.story em{font-style:normal;color:var(--gr)}.story em:nth-of-type(2){color:var(--ye)}.story em:nth-of-type(3){color:var(--or)}
+.prog{height:3px;background:var(--bd);margin:26px 0 12px}.prog i{display:block;height:100%;background:var(--ye);width:20%;transition:width .35s}
+.step{color:var(--mut);font-size:14px;margin:0 0 20px}
+.pn{display:none}.pn.on{display:block;animation:in .35s ease both}
+.pn h2{font-size:clamp(2rem,6vw,3.6rem);line-height:1;margin-bottom:26px}
+.huge{display:flex;align-items:baseline;gap:8px;font:800 clamp(4.5rem,20vw,10rem)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.04em;margin-bottom:14px}
+.huge input{font:inherit;letter-spacing:inherit;color:var(--ye);background:none;border:0;border-bottom:2px solid var(--bd);padding:0;width:3.5ch;border-radius:0}
+.huge span{font-size:.28em;color:var(--mut);letter-spacing:0}
+input[type=range]{width:100%;accent-color:var(--ye)}
+input,select{font:inherit;color:var(--fg);background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:8px}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--ye);outline-offset:2px}
+.gg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.gc{background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:16px}.gc h3{font-size:22px;margin-bottom:10px}
+.gc label{display:flex;justify-content:space-between;align-items:center;color:var(--mut);margin:6px 0;font-size:14px}.gc input{width:84px;text-align:right}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 22px}
+.chip{background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:10px 14px}.chip.on{background:var(--gr);color:#14130f;border-color:var(--gr);font-weight:700}
+.fc.s1{opacity:.5;text-decoration:line-through;border-color:var(--be)}.fc.s2{border-color:var(--gr);background:#1e2a17}
+.hint{color:var(--mut);font-size:14px;margin:0 0 8px}
+.n2{display:flex;justify-content:space-between;align-items:center;margin-top:34px;gap:10px}.n2 .ghost{background:none;border:1px solid var(--bd);padding:15px 22px;border-radius:4px}
+.err,.warn{border:1px solid var(--or);border-radius:6px;padding:20px;margin:20px 0;background:#241a10}.warn h2{font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:8px}.err{color:var(--be);border-color:var(--be)}
+.fx{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.sm{color:var(--mut);font-size:13.5px}
+.rh{padding:40px 0 20px}.rh h1{font-size:clamp(2.8rem,10vw,7rem);line-height:.92}
+.bud{padding:20px 0 34px}.bn{font:800 clamp(4rem,16vw,9rem)/1 "Bricolage Grotesque",sans-serif;letter-spacing:-.04em;color:var(--ye)}.bn small{font:400 16px "DM Sans";color:var(--mut);letter-spacing:0;margin-left:10px}
+.bt{height:22px;background:var(--bd);border-radius:3px;overflow:hidden;margin:14px 0 8px}.bt i{display:block;height:100%;width:0;background:var(--ye);transition:width .8s ease}.bl{display:flex;justify-content:space-between;color:var(--mut)}
+h2.sec{font-size:clamp(1.8rem,5vw,3rem);margin:40px 0 16px}
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.mc{background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:18px;animation:in .5s ease both}.mc h3{font-size:24px;margin-bottom:8px}
+.me{font-size:2.6rem;letter-spacing:4px;line-height:1.2}.mc ul{list-style:none;padding:0;margin:8px 0 12px}.mc li{padding:5px 0;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;gap:10px}.mc li span{color:var(--mut);white-space:nowrap}
+.mf{display:flex;gap:14px;color:var(--mut);font-size:14px;flex-wrap:wrap}.mf b{color:var(--fg)}
+.rg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.rn{background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:16px;text-align:center}.rn svg{width:96px;height:96px}.rn .v{font:800 24px "Bricolage Grotesque",sans-serif}.rn small{display:block;color:var(--mut)}
+.rn circle{fill:none;stroke-width:7;stroke-linecap:round}.rn .bg{stroke:var(--bd)}.rn .rf{transition:stroke-dashoffset .9s ease}
+.mb{margin:12px 0}.mb div{display:flex;justify-content:space-between}.mb .t{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin-top:4px}.mb i{display:block;height:100%;background:var(--gr);width:0;transition:width .8s}
+.why li{margin:10px 0}.why{max-width:42em;padding-left:18px}
+.gd{border-left:3px solid var(--ye);padding:6px 0 6px 16px;color:var(--mut);max-width:42em;margin:30px 0}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.fd{background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:16px}.fd .em{font-size:3.4rem;line-height:1.1}.fd h3{font-size:20px;margin:6px 0 2px}.fd p{margin:3px 0;font-size:14px;color:var(--mut)}.fd .key{color:var(--gr)}.fd input{width:80px;margin-left:6px}
+textarea{width:100%;font:13px monospace;color:var(--fg);background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:8px}
+.how h2{font-size:clamp(1.8rem,5vw,3rem);margin:34px 0 8px}.how p{max-width:40em;color:var(--mut)}
+.dsh{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--bd)}.dsh .me{font-size:2.2rem;letter-spacing:0;line-height:1.2}.dr{display:flex;gap:8px;margin:6px 0}.dr select{flex:1;min-width:0}details.gd summary{cursor:pointer}
+.fb{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:10px}.fb input,.fb select{width:100%}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<nav><b class="brand">Paisa Plate</b><div><button data-v="home" class="cur">Home</button><button data-v="plan">Plan</button><button data-v="foods">Foods</button><button data-v="how">How it works</button></div></nav>
+<main>
+<section class="view on" id="v-home">
+<div class="hero"><p class="kick">A food plan built around your money</p>
+<h1><span>Eat well.</span><span class="g">Spend wisely.</span></h1>
+<p class="lead">Build a personalized meal plan around your budget, calories, and nutritional goals.</p>
+<button class="cta" data-go="plan">Build My Food Plan</button><div class="tiles" id="tiles"></div></div>
+<div class="story"><p class="a">Healthy eating isn't only about knowing what is healthy.</p><p class="b">It's about finding what works with <em>your budget</em>, <em>your goals</em>, and <em>your available food</em>.</p></div>
+</section>
+<section class="view" id="v-plan"><div id="wiz">
+<div class="prog"><i id="pg"></i></div><p class="step" id="stl"></p><div id="err"></div>
+<div class="pn on" data-s="0"><h2>What's your budget?</h2><div class="huge">₹<input id="budget" type="number" inputmode="numeric" value="200"><span>/ day</span></div><input id="budgetR" type="range" min="50" max="600" step="5" value="200" aria-label="Budget"></div>
+<div class="pn" data-s="1"><h2>How much energy do you need?</h2><div class="huge"><input id="kcal" type="number" inputmode="numeric" value="2000"><span>kcal</span></div><input id="kcalR" type="range" min="1000" max="3500" step="50" value="2000" aria-label="Calories">
+<p class="hint" style="margin-top:22px">Meals per day</p><select id="meals"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+<div class="pn" data-s="2"><h2>What are your nutrition goals?</h2><div class="gg">
+<div class="gc"><h3>Protein</h3><label>Min g<input id="pmin" type="number" value="60"></label><label>Max g<input id="pmax" type="number"></label></div>
+<div class="gc"><h3>Carbohydrates</h3><label>Min g<input id="cmin" type="number" value="200"></label><label>Max g<input id="cmax" type="number" value="320"></label></div>
+<div class="gc"><h3>Fat</h3><label>Min g<input id="fmin" type="number" value="40"></label><label>Max g<input id="fmax" type="number" value="80"></label></div>
+<div class="gc"><h3>Fiber</h3><label>Min g<input id="fib" type="number" value="25"></label></div>
+<div class="gc"><h3>Micronutrients</h3><label>Iron mg<input id="iron" type="number"></label><label>Calcium mg<input id="calcium" type="number"></label><label>Vitamin C mg<input id="vitc" type="number"></label><label>B12 µg<input id="b12" type="number"></label></div></div>
+<p class="sm">These targets are yours to set. Leave a field empty to skip it.</p></div>
+<div class="pn" data-s="3"><h2>What foods do you eat?</h2><div class="chips" id="dch"></div><p class="hint">Favourite cuisines (optional; leave empty for all)</p><div class="chips" id="cuis"></div>
+<p class="hint">Allergies (these foods are removed)</p><div class="chips" id="als"></div>
+<p class="hint">Tap an ingredient once to drop every dish that uses it, twice to mark it as already at home (free in your plan).</p><div class="chips" id="fch"></div></div>
+<div class="pn" data-s="4"><h2>What's important to you?</h2><p class="hint">Pick any that apply. They tune the optimizer's settings.</p><div class="chips" id="prefs"></div><p class="hint">Longest cooking time you want per dish</p><select id="tmax"><option value="0">Any</option><option value="20">20 min</option><option value="30">30 min</option><option value="45">45 min</option></select></div>
+<div class="n2"><button class="ghost" id="back">Back</button><button class="cta" id="next">Next</button></div></div>
+<div id="out"></div></section>
+<section class="view" id="v-foods"><div class="rh"><p class="kick">The dish library</p><h1 class="disp" style="font-size:clamp(2.6rem,9vw,6rem);line-height:.95">What's on the menu.</h1><p class="lead">Every dish is built from ingredients. Nutrition and cost are calculated, never typed in, so editing an ingredient price updates every dish. Ingredient values are estimates; edit them if you have better data.</p></div>
+<div class="chips" id="ff"></div>
+<div id="dfil"><div class="fb"><input id="fq" placeholder="Search, e.g. high protein vegetarian"><select id="fc"></select><select id="fm"><option value="">Any meal</option><option value="b">Breakfast</option><option value="l">Lunch</option><option value="d">Dinner</option><option value="s">Snack</option></select><input id="fcost" type="number" placeholder="Max ₹"><input id="fpro" type="number" placeholder="Min protein g"><input id="ftime" type="number" placeholder="Max minutes"></div><p class="sm" id="fcount"></p></div>
+<div id="dgrid"></div><div class="fgrid" id="fgrid"></div>
+<h2 class="sec" id="cdh">Create or edit a dish</h2><div class="gc"><div class="gg"><label>Name<input id="dn" style="width:100%"></label>
+<label>Meals (b l d s)<input id="dm" value="ld" style="width:70px"></label><label>Cuisine<select id="dc"></select></label>
+<label>Type<select id="dr"><option>main</option><option>base</option><option>curry</option><option>side</option><option>snack</option><option>bev</option></select></label>
+<label>Prep min<input id="dt" type="number" value="20"></label>
+<label>One serving is<input id="dper" type="number" value="1" style="width:60px"> <input id="dunit" value="bowl" style="width:90px"></label></div>
+<p class="hint" style="margin-top:12px">Ingredients per serving</p><div id="drows"></div><button class="chip" id="darow">+ Ingredient</button>
+<p class="sm" id="dprev"></p><button class="cta" id="dsave">Save dish</button></div>
+<h2 class="sec">Add an ingredient</h2><p class="sm">JSON with the same fields as the sample. Nutrients are per 100 g; diet is vegan, veg or nonveg.</p><textarea id="addj" rows="5"></textarea><p><button class="chip" id="addb">Add ingredient</button> <span id="addm" class="sm"></span></p></section>
+<section class="view how" id="v-how"><div class="rh"><p class="kick">How it works</p><h1 class="disp" style="font-size:clamp(2.6rem,9vw,6rem);line-height:.95">The math, kept out of sight.</h1></div>
+<h2>You set the goals</h2><p>Budget, calories, protein, carbs, fat, fiber, optional minerals and vitamins, plus what you eat and what you'd rather skip.</p>
+<h2>An optimizer does the sums</h2><p>A mixed-integer linear program picks how many servings of each dish go into each meal. Dishes are built from ingredients, so nutrition and cost are always calculated, never typed in. It keeps every meal in a sensible calorie range and shape (a main, or a base plus a curry), limits repeats, and keeps portions practical. Nothing is guessed by AI.</p>
+<h2>If it can't fit, it tells you why</h2><p>It builds the closest plan within budget, finds the budget that would work, and offers one-tap changes.</p>
+<h2>Maths, not medical advice</h2><p>Quantities, costs and nutrient totals are calculated from the food database. Whether a target suits your body is outside what this tool can judge. For health conditions, pregnancy, children or medication, ask a doctor or registered dietitian.</p></section>
+</main><script>
+/* ===== 1. FOOD DATABASE (edit RAW or use the Add food box) ===== */
+const NUT=[['kcal','Calories','kcal'],['protein','Protein','g'],['carbs','Carbohydrates','g'],['fat','Fat','g'],['fiber','Fiber','g'],['iron','Iron','mg'],['calcium','Calcium','mg'],['vitc','Vitamin C','mg'],['b12','Vitamin B12','µg']];
+const COLS=['name','diet','price','serv','kcal','protein','carbs','fat','fiber','iron','calcium','vitc','b12','max','meals','allergens'];
+// name,diet,₹/kg,serving g,kcal,P,C,F,fiber,Fe,Ca,VitC,B12 (per 100 g), max servings, meal tags (b/l/d/s), allergens
+const RAW=[
+['Rice (raw)','vegan',60,60,360,7,79,.6,1,.7,10,0,0,6,'ld',''],
+['Wheat atta','vegan',45,50,340,12,70,1.7,11,4.9,41,0,0,6,'ld','gluten'],
+['Oats','vegan',150,40,380,13,67,7,10,4.7,54,0,0,4,'b','gluten'],
+['Poha','vegan',70,40,350,7,77,1,2,10,20,0,0,4,'bs',''],
+['Besan','vegan',90,30,390,22,58,7,11,5,45,0,0,3,'bs',''],
+['Toor dal','vegan',150,50,340,22,62,1.5,15,3,73,0,0,4,'ld',''],
+['Moong dal','vegan',130,50,345,24,60,1.2,16,4,75,0,0,4,'ld',''],
+['Kala chana','vegan',110,50,360,20,61,5,12,5,200,3,0,4,'lds',''],
+['Rajma','vegan',140,50,330,23,60,1.3,15,5,140,4,0,4,'ld',''],
+['Soya chunks','vegan',120,30,345,52,33,.5,13,20,350,0,0,4,'ld','soy'],
+['Peanuts','vegan',130,30,570,26,16,49,8.5,2,90,0,0,3,'s','peanut'],
+['Milk (toned)','veg',58,200,60,3.1,4.7,3,0,.1,120,1,.5,4,'bs','dairy'],
+['Curd','veg',70,100,62,3.5,4.5,3.5,0,.1,120,1,.4,4,'lds','dairy'],
+['Paneer','veg',360,50,290,18,3,22,0,.2,400,0,.8,3,'ld','dairy'],
+['Eggs (2)','nonveg',130,100,145,12.5,1,10,0,1.8,55,0,1.1,3,'bld','egg'],
+['Chicken breast','nonveg',220,100,120,23,0,2.5,0,.7,10,0,.3,3,'ld',''],
+['Rohu fish','nonveg',250,100,100,17,0,3,0,1,60,0,2,3,'ld','fish'],
+['Potato','vegan',30,100,77,2,17,.1,2.2,.8,12,20,0,4,'bld',''],
+['Tomato','vegan',40,100,20,.9,3.9,.2,1.2,.5,10,14,0,3,'ld',''],
+['Spinach','vegan',40,100,23,2.9,3.6,.4,2.2,2.7,99,28,0,3,'ld',''],
+['Carrot','vegan',50,100,41,.9,10,.2,2.8,.3,33,6,0,3,'ls',''],
+['Cabbage','vegan',30,100,25,1.3,5.8,.1,2.5,.5,40,36,0,3,'ld',''],
+['Banana','vegan',50,100,90,1.1,23,.3,2.6,.3,6,9,0,4,'bs',''],
+['Guava','vegan',60,100,68,2.6,14,1,5.4,.3,18,228,0,3,'s',''],
+['Cooking oil','vegan',140,10,900,0,0,100,0,0,0,0,0,3,'ld',''],
+['Onion','vegan',35,100,40,1.1,9,.1,1.7,.2,23,7,0,3,'ld',''],
+['Spices','vegan',400,5,300,10,50,10,25,20,500,0,0,1,'ld',''],
+['Sooji','vegan',55,50,350,12,73,1,3,1.5,10,0,0,4,'b','gluten'],
+['Water','vegan',0,100,0,0,0,0,0,0,0,0,0,0,'','']];
+const DB={foods:RAW.map(r=>Object.fromEntries(COLS.map((c,i)=>[c,r[i]]))),
+ add(f){for(const c of COLS)if(f[c]==null)throw Error('Missing field: '+c);
+  if(!['vegan','veg','nonveg'].includes(f.diet))throw Error('diet must be vegan, veg or nonveg');
+  for(const c of COLS.slice(2,14))if(!isFinite(f[c]))throw Error(c+' must be a number');
+  f.meals=String(f.meals);f.allergens=String(f.allergens);this.foods.push(f)}};
+
+/* ===== 2. INPUT + VALIDATION (preferences map onto the existing model settings) ===== */
+const $=id=>document.getElementById(id),num=id=>{const v=$(id).value;return v===''?null:+v};
+let D='veg',VOV=null;const ST={},PR=new Set(),AL=new Set(),CU=new Set(),BAN=new Set(),LOCK=new Set();
+const Input={read(){const kcal=num('kcal');
+ const r={budget:num('budget'),kcal,meals:+$('meals').value,diet:D=='egg'?'nonveg':D,maxGrams:400,variety:VOV??60,cw:30,
+  t:{protein:{min:num('pmin'),max:num('pmax')},carbs:{min:num('cmin'),max:num('cmax')},fat:{min:num('fmin'),max:num('fmax')},fiber:{min:num('fib'),max:null}},
+  micro:{iron:num('iron'),calcium:num('calcium'),vitc:num('vitc'),b12:num('b12')},
+  allergens:[...AL],maxTime:+$('tmax').value||0,cuis:[...CU],surprise:PR.has('surprise'),ban:BAN,lock:LOCK,ex:Object.keys(ST).filter(n=>ST[n]==1).map(n=>n.toLowerCase())};
+ if(D=='egg')r.ex.push(...DB.foods.filter(f=>f.diet=='nonveg'&&!/egg/i.test(f.name)).map(f=>f.name.toLowerCase()));
+ if(PR.has('budget'))r.cw=10;
+ if(PR.has('protein'))r.t.protein.min=Math.max(r.t.protein.min||0,Math.round(kcal*.2/4));
+ if(PR.has('variety'))r.variety=90;
+ if(PR.has('balanced')){r.t.carbs={min:Math.round(kcal*.45/4),max:Math.round(kcal*.6/4)};r.t.fat={min:Math.round(kcal*.2/9),max:Math.round(kcal*.35/9)}}
+ if(PR.has('waste')){r.cw=85;r.variety=Math.min(r.variety,40)}
+ const e=[];if(!(r.budget>0))e.push('Enter a daily budget above ₹0.');if(!(kcal>=500))e.push('Enter a calorie target of at least 500 kcal.');
+ for(const k in r.t){const {min,max}=r.t[k];if(min!=null&&min<0||max!=null&&max<0)e.push('Targets cannot be negative.');if(min!=null&&max!=null&&min>max)e.push(NUT.find(n=>n[0]==k)[1]+': minimum is higher than maximum.')}
+ return{r,e}}};
+/* ===== 3. DISH LAYER: ingredients -> dishes (nutrition and cost are always derived) ===== */
+const ING2=`Fenugreek leaves|vegan|60|50|49|4.4|6|.9|1.1|1.9|395|52|0|
+Bottle gourd|vegan|40|100|14|.6|3.4|.1|.5|.5|26|10|0|
+Urad dal|vegan|140|40|347|25|59|1.6|18|7.6|154|0|0|
+Ragi flour|vegan|70|50|336|7.3|72|1.3|11.5|3.9|344|0|0|
+Bajra flour|vegan|50|50|361|11.6|67|5|11.5|8|42|0|0|
+Jowar flour|vegan|55|50|349|10.4|72.6|1.9|9.7|4.1|25|0|0|
+Corn flour|vegan|60|50|355|9.3|73|3.8|7|2.7|10|0|0|
+Sabudana|vegan|90|50|351|.2|86|.2|.9|1.2|20|0|0|
+Dalia|vegan|60|50|342|12|69|1.5|12|3|40|0|0|gluten
+Cauliflower|vegan|40|100|25|1.9|5|.3|2|.4|22|48|0|
+Brinjal|vegan|40|100|25|1|5.9|.2|3|.2|9|2|0|
+Green peas|vegan|80|50|81|5.4|14|.4|5.7|1.5|25|40|0|
+Capsicum|vegan|60|100|20|.9|4.6|.2|1.7|.3|10|80|0|
+Cucumber|vegan|30|100|15|.7|3.6|.1|.5|.3|16|3|0|
+Coconut (grated)|vegan|120|20|354|3.3|15|33|9|2.4|14|3|0|
+Tofu|vegan|280|100|76|8|1.9|4.8|.3|5.4|350|0|0|soy
+Bread (brown)|vegan|70|35|265|9|49|3.2|7|2.5|150|0|0|gluten
+Pav|vegan|60|35|290|8|52|5|2.5|2|100|0|0|gluten
+Apple|vegan|150|100|52|.3|14|.2|2.4|.1|6|5|0|
+Avocado|vegan|400|70|160|2|9|15|6.7|.6|12|10|0|`; // all ingredient values are approximate estimates
+ING2.split('\n').forEach(l=>{const a=l.split('|');DB.add({name:a[0],diet:a[1],price:+a[2],serv:+a[3],kcal:+a[4],protein:+a[5],carbs:+a[6],fat:+a[7],fiber:+a[8],iron:+a[9],calcium:+a[10],vitc:+a[11],b12:+a[12],max:3,meals:'ld',allergens:a[13]||'',src:'estimate'})});
+DB.foods.forEach(f=>f.hide=/^(Water|Spices)$/.test(f.name));DB.foods.find(f=>/^Eggs/.test(f.name)).pcg=50;DB.foods.forEach(f=>f.src=f.src||'estimate'); // pcg = grams per piece
+const UNITS={g:1,ml:1,tsp:5,tbsp:15},RANK=['vegan','veg','nonveg'];
+const AL2={oil:'Cooking oil',sp:'Spices',on:'Onion',tom:'Tomato',atta:'Wheat atta',egg:'Eggs (2)',moong:'Moong dal',toor:'Toor dal',chana:'Kala chana',milk:'Milk (toned)',rice:'Rice (raw)',chicken:'Chicken breast',soya:'Soya chunks',pot:'Potato',fenu:'Fenugreek leaves',lauki:'Bottle gourd',cauli:'Cauliflower',sabu:'Sabudana',peas:'Green peas'};
+const res=t=>{const l=t.toLowerCase();return AL2[l]||(DB.foods.find(f=>f.name.toLowerCase().startsWith(l))||{name:t}).name};
+const P=s=>s.split(',').map(x=>{const m=x.match(/^(.+):([\d.]+)(g|ml|tsp|tbsp|pc)?$/);return[res(m[1]),+m[2],m[3]||'g']});
+// name, description, meal tags (b/l/d/s), role (main|base|curry|side|snack), serving unit, units per serving, ingredients, prep min, method, step (serving granularity), max servings
+const DRAW=[
+['Besan Chilla','Savoury gram-flour pancakes with onion','b','main','chilla',2,'Besan:60g,Onion:30g,Cooking oil:5g,Spices:2g,Water:80ml',15,'Pan-fry',.5],
+['Poha','Flattened rice with potato and peanuts','b','main','bowl',1,'Poha:60g,Potato:40g,Onion:20g,Peanuts:10g,Cooking oil:5g,Spices:2g',15,'Saute'],
+['Oats Porridge','Oats simmered in milk with banana','b','main','bowl',1,'Oats:40g,Milk (toned):200g,Banana:60g',10,'Simmer'],
+['Vegetable Upma','Semolina cooked with vegetables','b','main','bowl',1,'Sooji:60g,Onion:20g,Carrot:30g,Cooking oil:6g,Spices:2g',20,'Saute'],
+['Egg Bhurji Roti','Spiced scrambled eggs with roti','b','main','plate',1,'Eggs (2):100g,Onion:30g,Tomato:30g,Cooking oil:5g,Spices:2g,Wheat atta:60g,Water:40ml',20,'Pan-fry'],
+['Roti','Whole-wheat flatbread','ld','base','roti',2,'Wheat atta:60g,Water:40ml',10,'Griddle',.5,4],
+['Steamed Rice','Plain boiled rice','ld','base','bowl',1,'Rice (raw):60g,Water:150ml',20,'Boil',.5,4],
+['Dal Tadka','Toor dal tempered with onion and tomato','ld','curry','bowl',1,'Toor dal:40g,Onion:20g,Tomato:30g,Cooking oil:5g,Spices:2g,Water:200ml',30,'Pressure-cook',.5],
+['Rajma Masala','Kidney beans in a tomato gravy','ld','curry','bowl',1,'Rajma:50g,Onion:30g,Tomato:40g,Cooking oil:6g,Spices:3g,Water:200ml',40,'Pressure-cook',.5],
+['Chole','Spiced chickpea curry','ld','curry','bowl',1,'Kala chana:50g,Onion:30g,Tomato:40g,Cooking oil:6g,Spices:3g,Water:200ml',40,'Pressure-cook',.5],
+['Paneer Bhurji','Crumbled paneer with onion and tomato','ld','curry','serving',1,'Paneer:80g,Onion:30g,Tomato:30g,Cooking oil:6g,Spices:2g',15,'Saute'],
+['Mixed Veg Sabzi','Dry cabbage, carrot and potato sabzi','ld','curry','bowl',1,'Cabbage:80g,Carrot:40g,Potato:40g,Cooking oil:6g,Spices:2g',20,'Saute'],
+['Soya Chunk Curry','Soya chunks in onion-tomato gravy','ld','curry','bowl',1,'Soya chunks:30g,Onion:30g,Tomato:40g,Cooking oil:6g,Spices:3g,Water:150ml',25,'Simmer'],
+['Egg Curry','Boiled eggs in masala gravy','ld','curry','serving',1,'Eggs (2):100g,Onion:40g,Tomato:40g,Cooking oil:6g,Spices:3g,Water:100ml',25,'Simmer'],
+['Chicken Curry','Home-style chicken curry','ld','curry','serving',1,'Chicken breast:120g,Onion:40g,Tomato:40g,Cooking oil:8g,Spices:3g,Water:150ml',35,'Simmer'],
+['Moong Khichdi','Rice and moong dal one-pot','ld','main','plate',1,'Rice (raw):40g,Moong dal:30g,Carrot:30g,Cooking oil:5g,Spices:2g,Water:300ml',30,'Pressure-cook',.5],
+['Veg Pulao','Rice cooked with vegetables','ld','main','plate',1,'Rice (raw):70g,Carrot:30g,Onion:20g,Cooking oil:6g,Spices:2g,Water:180ml',30,'Simmer',.5],
+['Curd Bowl','Plain curd','blds','side','bowl',1,'Curd:100g',1,'None'],
+['Banana + Milk','A banana with a glass of milk','bs','snack','serving',1,'Banana:100g,Milk (toned):200g',2,'None'],
+['Roasted Chana','Dry-roasted chickpeas','s','snack','handful',1,'Kala chana:30g',10,'Roast'],
+['Peanuts','A handful of peanuts','s','snack','handful',1,'Peanuts:30g',1,'None'],
+['Masala Sprouts','Sprouted moong with onion and tomato','s','snack','bowl',1,'Moong dal:40g,Onion:20g,Tomato:20g,Spices:1g',15,'Sprout and toss'],
+['Glass of Milk','Toned milk','bs','snack','glass',1,'Milk (toned):200g',1,'None']];
+const CUIS={G:'Gujarati',S:'South Indian',N:'North Indian',M:'Maharashtrian',B:'Bengali',R:'Rajasthani',P:'Punjabi',K:'Kerala',A:'Andhra/Telangana',O:'Odia',As:'Assamese',Go:'Goan',Bi:'Bihari',H:'Himachali',Ch:'Chhattisgarhi',Jh:'Jharkhandi',Md:'Mediterranean',Me:'Middle Eastern',E:'East Asian',Mx:'Mexican',W:'Western',Pan:'Pan-Indian'};
+// name|cuisine|meals|role|unit|units per serving|ingredients (g unless stated)|prep min|method|serving step|max servings
+const NEW=`Moong Dal Chilla|Pan|b|main|chilla|2|moong:50,on:25,tom:20,oil:5,sp:2|20|griddle|.5
+Methi Thepla with Curd|G|b|main|plate|1|atta:50,fenu:30,curd:80,oil:6,sp:2|20|griddle|.5
+Vegetable Handvo|G|bs|main|slice|2|rice:30,toor:20,lauki:60,oil:8,sp:2|45|bake|.5
+Dhokla|G|bs|main|piece|4|besan:60,curd:30,oil:4,sp:2|25|steam|.5
+Muthiya|G|bs|main|piece|4|atta:30,lauki:60,besan:15,oil:6,sp:2|30|steam|.5
+Masala Dosa|S|b|main|dosa|1|rice:40,urad:15,pot:80,on:30,oil:8,sp:2|30|griddle|.5
+Ragi Dosa|S|b|main|dosa|2|ragi:45,rice:15,on:20,oil:6|20|griddle|.5
+Pesarattu|A|b|main|dosa|2|moong:60,rice:10,on:20,oil:6,sp:2|25|griddle|.5
+Adai|S|b|main|dosa|2|rice:30,toor:15,moong:15,oil:6,sp:2|30|griddle|.5
+Vegetable Uttapam|S|b|main|uttapam|2|rice:40,urad:15,on:25,tom:25,carrot:20,oil:6|25|griddle|.5
+Idli with Sambar|S|b|main|plate|1|rice:50,urad:20,toor:25,tom:20,on:15,oil:3,sp:2|30|steam|.5
+Pongal|S|b|main|bowl|1|rice:50,moong:25,oil:6,sp:2|25|pressure
+Puttu with Kadala Curry|K|b|main|plate|1|rice:60,coconut:15,chana:40,on:20,oil:5,sp:2|40|steam|.5
+Kanda Poha|M|b|main|bowl|1|poha:60,on:50,peanuts:10,oil:5,sp:2|15|saute
+Sabudana Khichdi|M|b|main|bowl|1|sabu:50,pot:50,peanuts:20,oil:6,sp:2|25|saute
+Thalipeeth|M|b|main|piece|2|jowar:30,besan:20,on:30,oil:6,sp:2|25|griddle|.5
+Misal Pav|M|b|main|plate|1|moong:50,on:30,tom:30,oil:6,sp:3,pav:60|40|simmer
+Aloo Paratha with Curd|N|b|main|plate|1|atta:70,pot:80,curd:80,oil:10,sp:2|30|griddle|.5
+Paneer Paratha|N|bd|main|plate|1|atta:70,paneer:50,oil:8,sp:2|30|griddle|.5
+Chhattisgarhi Chila|Ch|b|main|chila|2|rice:50,on:20,tom:20,oil:6,sp:1|25|griddle|.5
+Dhuska|Jh|b|main|piece|3|rice:60,chana:20,oil:12,sp:2|40|fry|.5
+Egg Bhurji Roll|Pan|bld|main|roll|1|atta:50,egg:2pc,on:30,tom:20,oil:6,sp:2|20|griddle
+Masala Omelette|N|b|main|omelette|1|egg:2pc,on:20,tom:20,oil:5,sp:1|10|pan-fry
+Oats Vegetable Cheela|Pan|b|main|cheela|2|oats:30,besan:30,on:20,carrot:20,oil:5,sp:2|20|griddle|.5
+Vegetable Masala Oats|Pan|b|main|bowl|1|oats:50,carrot:30,peas:20,on:20,oil:4,sp:2|10|simmer
+Vegetable Dalia|N|b|main|bowl|1|dalia:60,carrot:30,peas:25,on:20,oil:5,sp:2|25|pressure
+Overnight Oats|W|b|main|jar|1|oats:50,milk:200,banana:60,peanuts:10|5|raw
+Avocado Toast|W|b|main|plate|1|bread:70,avocado:70,tom:40,sp:1|8|toast
+Peanut Banana Toast|W|bs|main|plate|1|bread:70,peanuts:25,banana:80|8|toast
+Paneer Sandwich|W|bs|main|sandwich|1|bread:70,paneer:50,cucumber:30,oil:3|10|toast
+Curd Rice|S|ld|main|bowl|1|rice:50,curd:120,oil:2,sp:1|20|boil
+Lemon Rice|S|ld|main|bowl|1|rice:70,peanuts:10,oil:6,sp:2|20|saute
+Tomato Rice|S|ld|main|bowl|1|rice:70,tom:100,on:25,oil:6,sp:2|25|saute
+Appam with Vegetable Stew|K|ld|main|plate|1|rice:50,coconut:15,pot:50,carrot:30,peas:25,oil:5,sp:2|40|steam|.5
+Pav Bhaji|M|ld|main|plate|1|pot:80,cauli:50,peas:30,tom:40,on:30,oil:8,sp:3,pav:60|35|simmer
+Moong Usal|M|ld|curry|bowl|1|moong:50,on:25,tom:25,oil:6,sp:3|30|simmer|.5
+Zunka Bhakri|M|ld|main|plate|1|besan:50,on:40,oil:8,sp:3,jowar:60|30|saute|.5
+Bharli Vangi|M|ld|curry|bowl|1|brinjal:150,peanuts:15,coconut:10,on:30,oil:8,sp:3|40|simmer
+Cholar Dal|B|ld|curry|bowl|1|chana:50,coconut:10,oil:6,sp:3|40|pressure|.5
+Vegetable Jhol|B|ld|curry|bowl|1|pot:60,cauli:50,peas:30,carrot:30,oil:6,sp:3|30|simmer
+Bengali Khichuri|B|ld|main|plate|1|rice:50,moong:40,cauli:40,pot:30,peas:20,oil:8,sp:3|35|pressure|.5
+Macher Jhol|B|ld|curry|serving|1|rohu:120,pot:60,tom:30,on:20,oil:8,sp:3|30|simmer
+Dal Baati|R|ld|main|plate|1|atta:80,oil:12,toor:30,moong:15,on:20,sp:3|60|bake|.5
+Gatte Ki Sabzi|R|ld|curry|bowl|1|besan:60,curd:60,oil:10,sp:3|40|simmer|.5
+Bajra Roti with Dal|R|ld|main|plate|1|bajra:70,moong:40,oil:6,sp:2|30|griddle|.5
+Bajra Khichdi|R|ld|main|bowl|1|bajra:50,moong:30,oil:6,sp:2|35|pressure|.5
+Aloo Gobi|N|ld|curry|bowl|1|pot:80,cauli:100,on:30,tom:30,oil:8,sp:3|25|saute
+Matar Paneer|N|ld|curry|bowl|1|paneer:70,peas:50,tom:60,on:40,oil:8,sp:3|30|simmer
+Palak Paneer|N|ld|curry|bowl|1|paneer:70,spinach:150,on:30,tom:30,oil:8,sp:3|30|simmer
+Dal Makhani|P|ld|curry|bowl|1|urad:40,rajma:15,tom:40,on:20,oil:10,milk:50,sp:3|60|pressure|.5
+Kadhi Chawal|P|ld|main|plate|1|rice:60,curd:120,besan:25,oil:6,sp:3|40|simmer|.5
+Makki Roti with Palak Saag|P|ld|main|plate|1|corn:80,spinach:180,oil:10,sp:3|40|griddle|.5
+Rajma Chawal|N|ld|main|plate|1|rice:60,rajma:50,on:30,tom:40,oil:6,sp:3|45|pressure|.5
+Paneer Tikka|N|ld|curry|plate|1|paneer:100,capsicum:50,on:30,curd:30,oil:6,sp:3|25|grill
+Paneer Tikka Wrap|Pan|ld|main|wrap|1|atta:50,paneer:70,capsicum:40,on:20,curd:30,oil:6,sp:2|25|griddle
+Paneer Kathi Roll|N|ld|main|roll|1|atta:50,paneer:60,on:30,capsicum:30,oil:8,sp:2|25|griddle
+Vegetable Frankie|M|ld|main|roll|1|atta:50,pot:60,carrot:20,cabbage:30,oil:6,sp:2|25|griddle
+Chicken Biryani|A|ld|main|plate|1|rice:80,chicken:100,on:50,curd:30,oil:10,sp:4|60|simmer
+Kerala Fish Curry with Rice|K|ld|main|plate|1|rice:60,rohu:100,coconut:15,tom:30,oil:6,sp:3|35|simmer
+Dalma|O|ld|curry|bowl|1|toor:40,pot:30,brinjal:40,lauki:30,coconut:5,oil:5,sp:2|35|pressure
+Litti Chokha|Bi|ld|main|plate|1|atta:60,besan:25,brinjal:100,pot:50,tom:30,oil:10,sp:3|50|bake
+Himachali Madra|H|ld|curry|bowl|1|chana:60,curd:100,oil:8,sp:3|50|simmer
+Undhiyu|G|ld|curry|bowl|1|pot:60,brinjal:50,peas:40,cauli:40,coconut:10,oil:12,sp:3|50|simmer
+Sev Tameta|G|ld|curry|bowl|1|tom:200,besan:20,oil:8,sp:3|20|saute
+Gujarati Kadhi|G|ld|curry|bowl|1|curd:150,besan:20,oil:4,sp:2|25|simmer
+Gujarati Dal Dhokli|G|ld|main|bowl|1|toor:40,atta:50,oil:7,sp:3|45|pressure
+Gujarati Khichdi Kadhi|G|ld|main|plate|1|rice:45,moong:30,curd:100,besan:15,oil:7,sp:2|40|pressure
+Soya Keema|N|ld|curry|bowl|1|soya:35,peas:40,on:30,tom:40,oil:7,sp:3|25|saute
+Tandoori Chicken|N|ld|curry|serving|1|chicken:150,curd:50,oil:5,sp:3|40|grill
+Chicken Stir Fry|E|ld|curry|serving|1|chicken:120,capsicum:40,carrot:30,cabbage:40,oil:8,sp:1|20|stir-fry
+Grilled Chicken Salad|W|ld|main|bowl|1|chicken:120,cucumber:60,tom:50,oil:5|20|grill
+Mediterranean Chickpea Salad|Md|ls|main|bowl|1|chana:50,cucumber:80,tom:60,on:20,oil:6|15|raw
+Hummus Roti Plate|Me|ld|main|plate|1|chana:50,oil:10,cucumber:60,carrot:40,atta:50|25|blend
+Falafel Bowl|Me|ld|main|bowl|1|chana:60,on:20,oil:15,cucumber:50,tom:40,curd:50|35|fry
+Shakshuka|Me|bld|main|plate|1|egg:2pc,tom:150,on:40,capsicum:30,oil:6,sp:2,bread:60|25|simmer
+Burrito Bowl|Mx|ld|main|bowl|1|rice:60,rajma:40,tom:50,on:20,capsicum:30,oil:6,curd:30|35|simmer
+Bean Tacos|Mx|ld|main|taco|2|atta:50,rajma:50,tom:40,on:20,cabbage:30,oil:5|30|griddle
+Tofu Stir Fry|E|ld|curry|bowl|1|tofu:120,capsicum:40,carrot:30,cabbage:40,oil:8,sp:1|20|stir-fry
+Vegetable Fried Rice|E|ld|main|bowl|1|rice:70,carrot:30,cabbage:30,peas:20,oil:8|20|stir-fry
+Tofu and Vegetable Rice Bowl|E|ld|main|bowl|1|tofu:120,rice:70,carrot:30,capsicum:30,oil:6|25|stir-fry
+Lentil Buddha Bowl|W|ld|main|bowl|1|moong:50,rice:50,carrot:30,cucumber:40,tom:30,oil:6|30|boil
+Lentil Soup|Me|ld|curry|bowl|1|moong:50,carrot:30,on:20,tom:30,oil:4,sp:2|30|simmer
+Khandvi|G|s|snack|plate|1|besan:40,curd:60,oil:5,sp:2|25|steam
+Palak Patra|G|s|snack|piece|3|besan:30,spinach:80,oil:4,sp:2|35|steam|.5
+Peanut Chaat|N|s|snack|bowl|1|peanuts:30,on:20,tom:30,cucumber:20,sp:1|10|raw
+Boiled Chana Chaat|N|s|snack|bowl|1|chana:50,on:20,tom:30,cucumber:20,sp:1|10|raw
+Paneer Chaat|N|s|snack|bowl|1|paneer:60,cucumber:40,tom:30,sp:1|10|raw
+Fruit Bowl|Pan|bs|snack|bowl|1|banana:100,apple:100|3|raw
+Curd Fruit Bowl|W|bs|snack|bowl|1|curd:150,banana:80,apple:60,peanuts:10|5|raw
+Cucumber Raita|N|s|side|bowl|1|curd:100,cucumber:60,sp:1|5|raw
+Boiled Eggs|W|bs|snack|plate|1|egg:2pc,sp:1|12|boil
+Vegetable Cutlet|Pan|s|snack|piece|2|pot:80,carrot:20,peas:20,oil:8,sp:2|25|shallow-fry
+Chaas|N|bs|bev|glass|1|curd:80,sp:1|3|raw
+Banana Milkshake|W|bs|bev|glass|1|banana:100,milk:200|3|blend
+Ragi Malt|S|bs|bev|glass|1|ragi:25,milk:200|10|simmer`;
+const mk2=s=>{const a=s.split('|');return{name:a[0],desc:'',cuisine:CUIS[a[1]]||a[1],meals:a[2],role:a[3],unit:a[4],per:+a[5],ings:P(a[6]),time:+a[7],method:a[8]||'',step:+a[9]||1,max:+a[10]||3}};
+const mkDish=r=>({cuisine:'Pan-Indian',name:r[0],desc:r[1],meals:r[2],role:r[3],unit:r[4],per:r[5],ings:P(r[6]),time:r[7],method:r[8],step:r[9]||1,max:r[10]||3});
+const Dishes={list:DRAW.map(mkDish).concat(NEW.split('\n').map(mk2))};
+// dish_nutrient = sum(ingredient grams x nutrient per gram); dish_cost = sum(grams x price per gram)
+function calc(d,ings){const by=Object.fromEntries(ings.map(f=>[f.name,f])),o={...d,nut:{},cost:0,allergens:[],inside:[],primary:'',src:d.src||'calculated'};let rk=0,pg=0;NUT.forEach(n=>o.nut[n[0]]=0);
+ for(const [n,q,u] of d.ings){const f=by[n];if(!f)throw Error('Unknown ingredient: '+n);const g=u=='pc'?q*(f.pcg||f.serv):q*UNITS[u];
+  NUT.forEach(([k])=>o.nut[k]+=f[k]*g/100);o.cost+=g*f.price/1000;rk=Math.max(rk,RANK.indexOf(f.diet));
+  f.allergens.split(/[ ,]+/).filter(Boolean).forEach(a=>o.allergens.includes(a)||o.allergens.push(a));o.inside.push([n,q,u,g]);if(!/^(Water|Cooking oil|Spices|Onion|Tomato)$/.test(n)&&g>pg){pg=g;o.primary=n}}
+ o.diet=RANK[rk];const meat=d.ings.some(i=>/chicken|rohu/i.test(i[0])),egg=d.ings.some(i=>/^Eggs/.test(i[0])),a=o.allergens;
+ o.tags=[o.diet=='vegan'?'vegan':o.diet=='veg'?'vegetarian':meat?'non-veg':'egg-containing',o.nut.protein>=15&&'high-protein',o.nut.fiber>=6&&'high-fiber',!a.includes('dairy')&&'dairy-free',!a.includes('gluten')&&'gluten-free',o.diet!='nonveg'&&!d.ings.some(i=>/onion|potato|carrot/i.test(i[0]))&&'jain-friendly',o.cost<=15&&'low-cost',o.cost>40&&'higher-cost',d.time<=20&&'quick'].filter(Boolean);return o}
+
+/* ===== 4. CONSTRAINT BUILDER + DISH MILP ENGINE ===== */
+// x = servings of dish j in meal slot m, as integer steps n (servings = n x step); y = 1 if dish used in slot
+const CFG={mealTol:.25,maxDishes:{b:3,l:4,d:4,s:2},maxRepeat:2,loose:false,free:{dish:1,prim:2,cui:2,mth:3},vw:{dish:1,prim:.6,cui:.5,mth:.3},short:{m:8,c:6,s:7}} // variety: allowed repeats (free) and penalty weights (vw) per same dish / primary ingredient / cuisine / cooking method; // configurable meal calorie range (+/-25% of slot share), dishes per meal, repeats
+const SLOTS={2:[['Lunch','l',.5],['Dinner','d',.5]],3:[['Breakfast','b',.3],['Lunch','l',.4],['Dinner','d',.3]],4:[['Breakfast','b',.25],['Lunch','l',.35],['Snack','s',.1],['Dinner','d',.3]],5:[['Breakfast','b',.25],['Snack','s',.1],['Lunch','l',.3],['Snack','s',.1],['Dinner','d',.25]]};
+const DIETS={vegan:['vegan'],veg:['vegan','veg'],nonveg:['vegan','veg','nonveg']},BIG=20;
+function bounds(r){const b={kcal:{min:r.kcal,max:r.kcal*1.1}};
+ for(const k in r.t)if(r.t[k].min!=null||r.t[k].max!=null)b[k]=r.t[k];
+ for(const k in r.micro)if(r.micro[k]>0)b[k]={min:r.micro[k]};return b}
+function eligibleDishes(ds,r){const bad=d=>r.ex.some(e=>d.name.toLowerCase().includes(e)||d.inside.some(i=>i[0].toLowerCase().includes(e)));
+ return ds.filter(d=>DIETS[r.diet].includes(d.diet)&&!d.allergens.some(a=>r.allergens.includes(a))&&!bad(d)&&(!r.maxTime||d.time<=r.maxTime)&&d.cost<=r.budget*.5&&(!r.cuis||!r.cuis.length||d.cuisine=='Pan-Indian'||r.cuis.includes(d.cuisine)))}
+// shortlist: rank by protein/energy/fiber per rupee, keep a diverse top group per meal role so the MILP stays fast
+function shortlist(ds,r){const K=CFG.short,out=new Set();
+ [['b',['main'],K.m],['b',['snack','side','bev'],3],['ld',['base'],3],['ld',['curry'],K.c],['ld',['main'],K.m-2],['ld',['side','snack','bev'],2],['s',['snack','side','bev','main'],K.s]].forEach(([t,ro,k])=>{const cn={};let got=0;
+  ds.filter(d=>[...t].some(c=>d.meals.includes(c))&&ro.includes(d.role)).map(d=>[d,(1.5*d.nut.protein+d.nut.kcal/40+d.nut.fiber)/(d.cost+4)*(r.surprise?.4+Math.random()*1.2:1)]).sort((a,b)=>b[1]-a[1]).forEach(([d])=>{
+   if(got<k&&(cn[d.primary]||0)<2&&(cn[d.cuisine]||0)<3){got++;cn[d.primary]=(cn[d.primary]||0)+1;cn[d.cuisine]=(cn[d.cuisine]||0)+1;out.add(d.name)}})});
+ return ds.filter(d=>out.has(d.name))}
+function build(ds,r,o){
+ const B=bounds(r),sl=SLOTS[r.meals],rel=o.relax||new Set(),loose=CFG.loose||rel.has('meals'),tol=loose?.5:CFG.mealTol;
+ const M={optimize:'obj',opType:'min',constraints:{},variables:{},ints:{},options:{timeout:3500,tolerance:.04}};
+ const wc=1-.8*r.cw/100,wp=.2+.8*r.cw/100,wr=.02+.1*r.variety/100,cn=(k,c)=>M.constraints[k]=Object.assign(M.constraints[k]||{},c);
+ // objective: cost/budget + servings/12 + repetition penalty (all pre-scaled to ~0-1, weights configurable)
+ const GS={},GC={};ds.forEach((d,j)=>{let any=0;
+  sl.forEach(([nm,t],m)=>{if(!d.meals.includes(t)||(r.ban&&r.ban.has(d.name+'|'+m)))return;any=1;const id=j+'_'+m,st=d.step,ub=Math.max(1,Math.floor(d.max/st)),c=d.cost*st;
+   const n={cost:c,obj:(o.minCost?c:wc*c/r.budget+wp*st/12)*(r.surprise&&!o.minCost?.6+Math.random()*.8:1)},y={};
+   NUT.forEach(([k])=>n[k]=d.nut[k]*st);
+   for(const k in B)if(!rel.has(k)){n[k+'_lo']=n[k];n[k+'_hi']=n[k]}
+   if(!o.noBudget)n.bud=c;
+   if(!rel.has('meals')){n['mklo'+m]=n.kcal;n['mkhi'+m]=n.kcal}
+   n['u'+id]=1;y['u'+id]=-ub;cn('u'+id,{max:0});n['l'+id]=1;y['l'+id]=-1;cn('l'+id,{min:0});
+   y['yb'+id]=1;cn('yb'+id,{max:1});y['cnt'+m]=1;y['cap'+j]=1;
+   [['dish',d.name],['prim',d.primary],['cui',d.cuisine=='Pan-Indian'?'':d.cuisine],['mth',d.method]].forEach(([g,v])=>{if(!v)return;const k='g_'+g+'_'+v;y[k]=1;GS[k]=g;GC[k]=(GC[k]||0)+1});
+   if(r.lock&&r.lock.has(d.name+'|'+m)){y['lk'+id]=1;cn('lk'+id,{min:1})}
+   if(!loose){const ro=d.role;if(ro=='main'){y['mx'+m]=1;y['rb'+m]=1;y['rc'+m]=1}if(ro=='base'){y['bx'+m]=1;y['rb'+m]=1}if(ro=='curry')y['rc'+m]=1}
+   M.variables['n'+id]=n;M.variables['y'+id]=y;M.ints['n'+id]=1;M.ints['y'+id]=1});
+  if(any)cn('cap'+j,{max:CFG.maxRepeat})});
+ sl.forEach(([nm,t,sh],m)=>{cn('cnt'+m,{min:1,max:CFG.maxDishes[t]});
+  if(!loose){cn('mx'+m,{max:1});if(t!='s')cn('rb'+m,{min:1});if(t=='l'||t=='d'){cn('rc'+m,{min:1});cn('bx'+m,{max:1})}}
+  if(!rel.has('meals')){cn('mklo'+m,{min:sh*r.kcal*(1-tol)});cn('mkhi'+m,{max:sh*r.kcal*(1+tol)})}});
+ for(const k in GS)if(GC[k]>CFG.free[GS[k]]){cn(k,{max:CFG.free[GS[k]]});M.variables['s'+k]={obj:wr*CFG.vw[GS[k]],[k]:-1}}
+ if(!o.noBudget)cn('bud',{max:r.budget});
+ for(const k in B){if(rel.has(k))continue;const {min,max}=B[k],ref=min??max,w=(k=='kcal'?1.5:1)*BIG/ref;
+  if(min!=null)cn(k+'_lo',{min});if(max!=null)cn(k+'_hi',{max});
+  if(o.soft){if(min!=null)M.variables[k+'_s']={obj:w,[k+'_lo']:1};if(max!=null)M.variables[k+'_o']={obj:w,[k+'_hi']:-1}}}
+ return M}
+const Engine={
+ totals(items){const t={cost:0};NUT.forEach(n=>t[n[0]]=0);items.forEach(it=>{t.cost+=it.cost;NUT.forEach(n=>t[n[0]]+=it.nut[n[0]])});return t},
+ solve(ds,r,o){const m=build(ds,r,o);if(o.lp)m.ints={};const s=solver.Solve(m);if(!s.feasible)return null;if(o.lp)return{cost:s.result};
+  const items=[];ds.forEach((d,j)=>SLOTS[r.meals].forEach((_,mm)=>{const u=Math.round(s['n'+j+'_'+mm]||0);if(u<1)return;const sv=u*d.step,nut={};NUT.forEach(([k])=>nut[k]=d.nut[k]*sv);items.push({d,slot:mm,servings:sv,cost:d.cost*sv,nut})}));
+  return{items,tot:this.totals(items)}},
+ optimize(ings,all,r){const el=eligibleDishes(all.map(d=>calc(d,ings)),r),ds=shortlist(el,r),out={n:el.length,k:ds.length,b:bounds(r)};
+  if(el.length<4){out.status='error';return out}
+  const p=this.solve(ds,r,{});if(p){out.status='ok';out.plan=p;return out}
+  out.status='infeasible';out.plan=this.solve(ds,r,{soft:true})||this.solve(ds,r,{soft:true,relax:new Set(['meals'])});
+  const keys=Object.keys(out.b).concat('meals'),lpf=o=>this.solve(ds,r,{...o,lp:true,minCost:true}),nb=lpf({noBudget:true});
+  if(nb){let s=Math.ceil(nb.cost*1.05/5)*5;for(let i=0;i<4&&!out.suggest;i++,s+=5)if(this.solve(ds,{...r,budget:s},{}))out.suggest=s}
+  out.culprits=keys.filter(k=>lpf({relax:new Set([k])}));
+  out.hardCulprits=nb?[]:keys.filter(k=>lpf({relax:new Set([k]),noBudget:true}));
+  return out}};
+
+/* ===== 5. RESULT FORMATTER ===== */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f0=(n,d=0)=>Number(n).toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}),lab=k=>k=='meals'?'meal structure':(NUT.find(n=>n[0]==k)||[0,k])[1].toLowerCase(),unit=k=>NUT.find(n=>n[0]==k)[2];
+const EM=[[/chicken/i,'🍗'],[/egg/i,'🥚'],[/chilla/i,'🥞'],[/pulao/i,'🍚'],[/sabzi/i,'🥗'],[/curry|masala|bhurji|chole/i,'🍛'],[/khichdi/i,'🍲'],[/rice/i,'🍚'],[/atta|roti|chapati/i,'🫓'],[/oats|curd/i,'🥣'],[/poha/i,'🍛'],[/besan/i,'🌾'],[/dal/i,'🍲'],[/chana|rajma/i,'🫘'],[/soya|tofu/i,'🌱'],[/peanut/i,'🥜'],[/milk/i,'🥛'],[/paneer/i,'🧀'],[/egg/i,'🥚'],[/chicken/i,'🍗'],[/fish/i,'🐟'],[/potato/i,'🥔'],[/tomato/i,'🍅'],[/spinach|cabbage/i,'🥬'],[/carrot/i,'🥕'],[/banana/i,'🍌'],[/guava/i,'🍈'],[/oil/i,'🫒']];
+const em=n=>(EM.find(e=>e[0].test(n))||[0,'🍽️'])[1],short=n=>n.replace(/\s*\(.*\)/,'');
+const lbl=(d,sv)=>{const q=+(sv*d.per).toFixed(1);return q+' '+(q==1?d.unit:d.unit+(/(s|ch|sh)$/.test(d.unit)?'es':'s'))};
+function why(a,tot,B){const ps=Object.keys(B).filter(k=>k!='kcal').map(k=>[k,a.nut[k]/(B[k].min??B[k].max)]).filter(x=>x[1]>=.08).sort((x,y)=>y[1]-x[1]).slice(0,2),sp=a.cost/tot.cost*100,kc=a.nut.kcal/tot.kcal*100;
+ return ps.length?`${a.d.name} covers ${ps.map(p=>f0(p[1]*100)+'% of your '+lab(p[0])+' target').join(' and ')} for ${f0(sp)}% of the spend.`:`${a.d.name} supplies ${f0(kc)}% of your calories for ${f0(sp)}% of the spend.`}
+const RC={kcal:'--ye',protein:'--gr',carbs:'--or',fat:'--be',fiber:'--gr'};
+function ring(k,B,t){const b=B[k],nm=NUT.find(n=>n[0]==k),v=t[k];
+ if(!b)return`<div class="rn"><div class="v">${f0(v)}${nm[2]}</div><small>${nm[1]}</small></div>`;
+ const ref=b.min??b.max,pc=v/ref,C=213.6,bad=b.min!=null&&v<b.min-.5||b.max!=null&&v>b.max+.5;
+ return`<div class="rn"><svg viewBox="0 0 80 80" role="img" aria-label="${nm[1]} ${f0(pc*100)}%"><circle class="bg" cx="40" cy="40" r="34"/><circle class="rf" cx="40" cy="40" r="34" transform="rotate(-90 40 40)" stroke="var(${bad?'--or':RC[k]})" style="stroke-dasharray:${C};stroke-dashoffset:${C}" data-off="${C*(1-Math.min(pc,1))}"/></svg><div class="v"><span class="cu" data-n="${v}">${f0(v)}</span> ${nm[2]}</div><small>${nm[1]}: ${b.min!=null?'goal ≥ '+f0(b.min):''}${b.min!=null&&b.max!=null?', ':''}${b.max!=null?'max '+f0(b.max):''}${bad?' ⚠':''}</small></div>`}
+function infeasible(r,res){const p=res.plan,B=res.b,t=p.tot,cu=res.suggest?res.culprits:res.hardCulprits;
+ const gaps=Object.keys(B).filter(k=>B[k].min!=null&&t[k]<B[k].min-.5).map(k=>`${lab(k)} (${f0(t[k]/B[k].min*100)}% of target)`);
+ const fx=[];if(res.suggest)fx.push(['budget:'+res.suggest,`Raise budget to ₹${res.suggest}`]);
+ fx.push(['kcal',`Lower calories to ${Math.round(r.kcal*.85/50)*50} kcal`]);
+ cu.filter(k=>!['kcal','meals'].includes(k)).forEach(k=>fx.push(['min:'+k,`Lower ${lab(k)} target by 25%`]));
+ if(cu.includes('meals'))fx.push(['meals','Relax meal structure']);
+ return`<div class="warn"><h2>Your current budget can't meet all of these goals.</h2><p>At ₹${f0(r.budget)}, the closest plan ${gaps.length?'falls short on '+gaps.join(' and '):'misses some of your ranges'}.${res.suggest?` Meeting every target would take about ₹${res.suggest} a day.`:' With the dishes allowed, no budget would meet every target together.'}</p><div class="fx">${fx.map(x=>`<button class="chip" data-fx="${x[0]}">${x[1]}</button>`).join('')}<button class="chip" data-v="foods">Add dishes or ingredients</button><button class="chip" onclick="edit()">Change my answers</button></div><p class="sm">These figures are calculated by the optimizer from the dish and ingredient database. They say nothing about whether a target is right for you.</p></div>`}
+function render(r,res){
+ if(res.status=='error')return`<div class="warn"><h2>Not enough dishes to work with.</h2><p>Only ${res.n} dishes match your diet, allergy and exclusion choices. Loosen them or add dishes.</p><button class="cta" onclick="edit()">Change my answers</button></div>`;
+ const p=res.plan,B=res.b,t=p.tot,ok=res.status=='ok',left=r.budget-t.cost,sl=SLOTS[r.meals];let h=ok?'':infeasible(r,res);
+ const agg={},ing={};p.items.forEach(i=>{const a=agg[i.d.name]=agg[i.d.name]||{d:i.d,cost:0,n:0,nut:Object.fromEntries(NUT.map(n=>[n[0],0]))};a.cost+=i.cost;a.n++;NUT.forEach(([k])=>a.nut[k]+=i.nut[k]);
+  i.d.inside.forEach(x=>ing[x[0]]=(ing[x[0]]||0)+x[3]*i.servings)});
+ const reps=Object.values(agg).filter(a=>a.n>1).map(a=>a.d.name);
+ h+=`<div class="rh"><p class="kick">${ok?'Every target met':'Closest plan within budget'}</p><h1>${ok?"Here's what your budget can do.":"Here's how far your budget goes."}</h1></div>
+<div class="bud"><div class="bn">₹<span class="cu" data-n="${t.cost}">${f0(t.cost)}</span><small>spent of ₹${f0(r.budget)}</small></div><div class="bt"><i data-w="${Math.min(t.cost/r.budget*100,100)}%"></i></div><div class="bl"><span>₹${f0(t.cost)} spent</span><span>₹${f0(left)} remaining</span></div></div>
+<h2 class="sec">Your day on a plate</h2><div class="mg">${sl.map(([nm],m)=>{const its=p.items.filter(i=>i.slot==m),s=its.reduce((a,i)=>({k:a.k+i.nut.kcal,p:a.p+i.nut.protein,c:a.c+i.cost}),{k:0,p:0,c:0});
+  return`<div class="mc"><h3>${nm}</h3>${its.map(i=>`<div class="dsh"><div class="me">${em(i.d.name)}</div><div><b>${esc(i.d.name)}</b><br><span class="sm">${lbl(i.d,i.servings)} · ₹${f0(i.cost)} · ${f0(i.nut.kcal)} kcal · ${f0(i.nut.protein)} g protein</span><br><span class="sm">${i.d.cuisine}</span><details><summary class="sm">View ingredients</summary><p class="sm">${i.d.inside.filter(x=>x[0]!='Water').map(x=>esc(x[0])+' '+f0(x[3]*i.servings)+' g').join(' · ')}</p></details><button class="chip" style="padding:4px 10px;font-size:13px;margin-top:4px" onclick="swap(${p.items.indexOf(i)})">Swap dish</button></div></div>`).join('')||'<p class="sm">Nothing assigned</p>'}<div class="mf"><span><b>₹${f0(s.c)}</b> cost</span><span><b>${f0(s.k)}</b> kcal</span><span><b>${f0(s.p)} g</b> protein</span></div></div>`}).join('')}</div>
+<h2 class="sec">Your nutrition</h2><div class="rg">${['kcal','protein','carbs','fat','fiber'].map(k=>ring(k,B,t)).join('')}</div>
+${['iron','calcium','vitc','b12'].filter(k=>B[k]).map(k=>{const b=B[k],pc=t[k]/b.min*100;return`<div class="mb"><div><span>${NUT.find(n=>n[0]==k)[1]}</span><span>${f0(t[k],1)} / ${f0(b.min)} ${unit(k)}${pc<99.5?' ⚠':''}</span></div><div class="t"><i data-w="${Math.min(pc,100)}%"></i></div></div>`}).join('')}
+<h2 class="sec">Why these dishes</h2><ul class="why">${Object.values(agg).sort((a,b)=>b.cost-a.cost).map(a=>`<li>${em(a.d.name)} ${esc(why(a,t,B))}</li>`).join('')}</ul>
+<p class="sm" style="max-width:42em">The optimizer chose servings of ${Object.keys(agg).length} dishes from ${res.n} matching dishes (shortlisted to ${res.k} by value and variety). Each meal has a calorie range, a main or base-plus-curry structure, and at most ${Math.max(...Object.values(CFG.maxDishes))} dishes. ${reps.length?'It repeated '+esc(reps.join(', '))+' because that was the best fit.':'No dish is repeated.'}</p>
+<details class="gd"><summary><b>Full ingredient list for the day</b></summary><p>${Object.entries(ing).filter(x=>x[0]!='Water').sort((a,b)=>b[1]-a[1]).map(x=>esc(x[0])+' '+f0(x[1])+' g').join(' · ')}</p></details>
+<div class="gd"><b>Calculated vs. general guidance.</b> Servings, costs and nutrient totals are calculated from the ingredient database. Your targets are your inputs, and this tool can't tell whether they suit your health. Talk to a doctor or registered dietitian if you have a condition, are pregnant, or plan big changes.</div>
+<button class="cta" onclick="edit()">Change my answers</button> <button class="chip" data-v="foods">Browse dishes</button>`;
+ return h}
+function anim(root){root.querySelectorAll('.cu').forEach(e=>{const n=+e.dataset.n,t0=performance.now();if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ (function tick(t){const p=Math.min((t-t0)/700,1);e.textContent=f0(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(tick)})(t0)});
+ setTimeout(()=>{root.querySelectorAll('[data-off]').forEach(e=>e.style.strokeDashoffset=e.dataset.off);root.querySelectorAll('[data-w]').forEach(e=>e.style.width=e.dataset.w)},60)}
+
+/* ===== 6. UI ===== */
+function view(v){document.querySelectorAll('.view').forEach(e=>e.classList.toggle('on',e.id=='v-'+v));document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('cur',b.dataset.v==v));scrollTo(0,0)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-v],[data-go],[data-fx]');if(!b)return;
+ if(b.dataset.v)view(b.dataset.v);else if(b.dataset.go)view(b.dataset.go);
+ else{const [a,k]=b.dataset.fx.split(':');
+  if(a=='budget'){$('budget').value=k;$('budgetR').value=k}
+  else if(a=='kcal'){const v=Math.round(num('kcal')*.85/50)*50;$('kcal').value=v;$('kcalR').value=v}
+  else if(a=='min'){const id={protein:'pmin',carbs:'cmin',fat:'fmin',fiber:'fib'}[k]||k;$(id).value=Math.round(num(id)*.75*10)/10}
+  else if(a=='meals')CFG.loose=true;
+  run()}});
+let step=0;const SN=5;
+function go(i){step=Math.max(0,Math.min(SN-1,i));document.querySelectorAll('.pn').forEach(p=>p.classList.toggle('on',+p.dataset.s===step));$('pg').style.width=(step+1)/SN*100+'%';$('stl').textContent=`Question ${step+1} of ${SN}`;$('back').style.visibility=step?'visible':'hidden';$('next').textContent=step==SN-1?'Build my plan':'Next'}
+$('next').onclick=()=>step==SN-1?run():go(step+1);$('back').onclick=()=>go(step-1);
+function edit(){$('out').innerHTML='';$('wiz').style.display='';go(0);scrollTo(0,0)}
+function bind(n,rg){const w=()=>$(n).style.width=Math.max(($(n).value||'0').length,1)+.4+'ch';$(rg).oninput=()=>{$(n).value=$(rg).value;w()};$(n).oninput=()=>{$(rg).value=$(n).value;w()};w()}
+bind('budget','budgetR');bind('kcal','kcalR');
+function chipRow(id,items,isOn,tog,cls=''){$(id).innerHTML=items.map(([k,l])=>`<button class="chip ${cls} ${isOn(k)}" data-k="${esc(k)}">${l}</button>`).join('');$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{tog(b.dataset.k);drawChips()})}
+function drawChips(){
+ chipRow('dch',[['vegan','Vegan'],['veg','Vegetarian'],['egg','Eggs'],['nonveg','Non-vegetarian']],k=>D==k?'on':'',k=>D=k);
+ chipRow('als',['gluten','dairy','egg','peanut','soy','fish'].map(a=>[a,a[0].toUpperCase()+a.slice(1)]),k=>AL.has(k)?'on':'',k=>AL.has(k)?AL.delete(k):AL.add(k));
+ chipRow('fch',DB.foods.filter(f=>!f.hide).map(f=>[f.name,em(f.name)+' '+short(f.name)]),k=>'s'+(ST[k]||0),k=>{ST[k]=((ST[k]||0)+1)%3;if(ST[k]==2)PR.add('pantry')},'fc');
+ chipRow('cuis',Object.values(CUIS).filter(c=>c!='Pan-Indian').map(c=>[c,c]),k=>CU.has(k)?'on':'',k=>CU.has(k)?CU.delete(k):CU.add(k));
+ chipRow('prefs',[['budget','Stay within my budget'],['protein','Higher protein'],['variety','More variety'],['pantry','Use foods I already have'],['balanced','Balanced nutrition'],['waste','Minimize food waste'],['surprise','Surprise me']],k=>PR.has(k)?'on':'',k=>PR.has(k)?PR.delete(k):PR.add(k))}
+function run(){const {r,e}=Input.read();
+ if(typeof solver==='undefined')e.push('The solver library could not load. Check your connection and reload.');
+ $('err').innerHTML=e.length?`<div class="err">${e.map(esc).join('<br>')}</div>`:'';if(e.length){view('plan');return}
+ $('wiz').style.display='none';$('out').innerHTML='<p class="sm" style="padding:60px 0">Working out your plan…</p>';view('plan');
+ setTimeout(()=>{const foods=DB.foods.map(f=>PR.has('pantry')&&ST[f.name]==2?{...f,price:0}:f);
+  BAN.clear();LOCK.clear();const res=Engine.optimize(foods,Dishes.list,r);LAST={r,res,foods};$('out').innerHTML=render(r,res);anim($('out'))},30)}
+let FF='dishes',LAST=null,EDIT=-1;
+const MN={b:'breakfast',l:'lunch',d:'dinner',s:'snack'};
+function foodsView(){const key=f=>{const R={protein:60,fiber:25,iron:17,calcium:1000,vitc:80,b12:2.4};const b=Object.keys(R).map(k=>[k,f[k]*f.serv/100/R[k]]).sort((a,b)=>b[1]-a[1])[0];return b[1]>=.08?`Rich in ${lab(b[0])}: ${f0(b[1]*100)}% of a typical day's reference`:'Mostly energy'};
+ $('ff').innerHTML=[['dishes','Dishes ('+Dishes.list.length+')'],['ing','Ingredients']].map(([k,l])=>`<button class="chip ${FF==k?'on':''}" data-f="${k}">${l}</button>`).join('');
+ $('ff').querySelectorAll('button').forEach(b=>b.onclick=()=>{FF=b.dataset.f;foodsView()});
+ const sh=FF=='dishes';$('dgrid').style.display=sh?'':'none';$('dfil').style.display=sh?'':'none';$('fgrid').style.display=sh?'none':'';
+ const q=$('fq').value.toLowerCase().split(/\s+/).filter(Boolean),fc=$('fc').value,fm=$('fm').value,mc=num('fcost'),mp=num('fpro'),mt=num('ftime');
+ const cd=Dishes.list.map((d,i)=>({...calc(d,DB.foods),i})).filter(d=>{const hay=(d.name+' '+d.cuisine+' '+d.tags.join(' ')+' '+d.inside.map(x=>x[0]).join(' ')+' '+[...d.meals].map(c=>MN[c]).join(' ')).toLowerCase();
+  return q.every(w=>hay.includes(w))&&(!fc||d.cuisine==fc)&&(!fm||d.meals.includes(fm))&&(mc==null||d.cost<=mc)&&(mp==null||d.nut.protein>=mp)&&(mt==null||d.time<=mt)});
+ $('fcount').textContent=`${cd.length} of ${Dishes.list.length} dishes`;
+ $('dgrid').innerHTML=`<div class="fgrid">${cd.map(d=>`<article class="fd"><div class="em">${em(d.name)}</div><h3>${esc(d.name)}</h3><p>${esc(d.cuisine)} · ${[...d.meals].map(c=>MN[c]).join(', ')}</p><p>${lbl(d,1)} · ${d.time} min</p><p>${f0(d.nut.kcal)} kcal · ${f0(d.nut.protein)} g protein · ₹${f0(d.cost)}</p><p class="key">${d.tags.join(' · ')}</p><details><summary class="sm">View ingredients</summary><p>${d.inside.map(x=>esc(x[0])+' '+x[1]+x[2]).join(', ')}</p><p class="sm">${d.src=='user-provided'?'User-provided dish.':'Calculated from ingredients.'} Ingredient values are estimates.</p></details><p><button class="chip" onclick="editDish(${d.i})">Edit</button> <button class="chip" onclick="delDish(${d.i})">Delete</button></p></article>`).join('')}</div>`;
+ $('fgrid').innerHTML=DB.foods.map((f,i)=>[f,i]).filter(([f])=>!f.hide).map(([f,i])=>`<article class="fd"><div class="em">${em(f.name)}</div><h3>${esc(f.name)}</h3><p>₹${f0(f.price*f.serv/1000,1)} per ${f.serv} g</p><p>${f0(f.kcal*f.serv/100)} kcal · ${f0(f.protein*f.serv/100,1)} g protein</p><p class="key">${key(f)}</p><p class="sm">Values: ${f.src||'estimate'}</p><p><label>₹/kg<input type="number" value="${f.price}" onchange="DB.foods[${i}].price=+this.value;foodsView()"></label></p></article>`).join('')}
+function drow(v){const d=document.createElement('div');d.className='dr';d.innerHTML=`<select>${DB.foods.map(f=>`<option>${esc(f.name)}</option>`).join('')}</select><input type="number" value="50" style="width:80px"><select><option>g</option><option>ml</option><option>tsp</option><option>tbsp</option><option>pc</option></select>`;
+ if(v){d.children[0].value=v[0];d.children[1].value=v[1];d.children[2].value=v[2]}d.oninput=dprev;$('drows').appendChild(d);dprev()}
+function dDraft(){return{name:$('dn').value.trim(),desc:'',cuisine:$('dc').value,meals:$('dm').value.replace(/[^bldsBLDS]/g,'').toLowerCase()||'ld',role:$('dr').value,unit:$('dunit').value||'serving',per:+$('dper').value||1,time:+$('dt').value||20,method:'',step:1,max:3,src:'user-provided',
+ ings:[...$('drows').children].map(d=>{const [s,i,u]=d.children;return[s.value,+i.value,u.value]})}}
+function dprev(){try{const c=calc(dDraft(),DB.foods),n=c.nut;$('dprev').textContent=`Calculated per serving: ${f0(n.kcal)} kcal · ${f0(n.protein)} g protein · ${f0(n.carbs)} g carbs · ${f0(n.fat)} g fat · ${f0(n.fiber,1)} g fiber · ₹${f0(c.cost,1)}`}catch(e){$('dprev').textContent=e.message}}
+function editDish(i){const d=Dishes.list[i];EDIT=i;$('dn').value=d.name;$('dm').value=d.meals;$('dc').value=d.cuisine;$('dr').value=d.role;$('dt').value=d.time;$('dper').value=d.per;$('dunit').value=d.unit;$('drows').innerHTML='';d.ings.forEach(drow);$('dsave').textContent='Save changes';$('cdh').scrollIntoView({behavior:'smooth'})}
+function delDish(i){if(confirm('Delete '+Dishes.list[i].name+'?')){Dishes.list.splice(i,1);foodsView()}}
+$('darow').onclick=()=>drow();
+$('dsave').onclick=()=>{const d=dDraft();if(!d.name||!d.ings.length){$('dprev').textContent='Add a name and at least one ingredient.';return}
+ if(EDIT>=0){d.step=Dishes.list[EDIT].step;d.max=Dishes.list[EDIT].max;Dishes.list[EDIT]=d}else Dishes.list.push(d);EDIT=-1;$('dsave').textContent='Save dish';FF='dishes';foodsView();dprev()};
+const copts=Object.values(CUIS);$('fc').innerHTML='<option value="">All cuisines</option>'+copts.map(c=>`<option>${c}</option>`).join('');$('dc').innerHTML=copts.map(c=>`<option>${c}</option>`).join('');
+['fq','fc','fm','fcost','fpro','ftime'].forEach(id=>$(id).oninput=foodsView);
+function swap(i){const {r,foods}=LAST,it=LAST.res.plan.items[i],bk=it.d.name+'|'+it.slot;BAN.add(bk);LOCK.clear();LAST.res.plan.items.forEach((x,k)=>{if(k!=i)LOCK.add(x.d.name+'|'+x.slot)});
+ $('out').insertAdjacentHTML('afterbegin','<p class="sm" id="sw">Finding another dish…</p>');
+ setTimeout(()=>{const res=Engine.optimize(foods,Dishes.list,r);if(res.status=='ok'){LAST.res=res;$('out').innerHTML=render(r,res);anim($('out'))}else{BAN.delete(bk);$('sw').textContent="No other dish fits your targets and budget for that slot. Try changing your answers."}},30)}
+drow();
+$('addj').value=JSON.stringify({name:'Sweet potato',diet:'vegan',price:50,serv:100,kcal:86,protein:1.6,carbs:20,fat:.1,fiber:3,iron:.6,calcium:30,vitc:2.4,b12:0,max:3,meals:'ld',allergens:''});
+$('addb').onclick=()=>{try{DB.add({...JSON.parse($('addj').value),src:'user-provided'});$('addm').textContent='Added.';foodsView();drawChips()}catch(x){$('addm').textContent='Could not add: '+x.message}};
+$('tiles').innerHTML=['Rice (raw)','Toor dal','Eggs (2)','Paneer','Banana','Peanuts','Spinach','Curd'].map(n=>`<div class="tl"><span>${em(n)}</span><small>${short(n).replace(' (raw)','')}</small></div>`).join('');
+drawChips();foodsView();go(0);
+
+</script></body></html>
